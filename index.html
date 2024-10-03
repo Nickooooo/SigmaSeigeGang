@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sped Site</title>
+    <title>Clicker Game with Admin Panel and Leaderboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -114,6 +114,12 @@
 
             if (isNaN(currentScore) || currentScore < 0) {
                 alert('Please enter a valid score.');
+                return;
+            }
+
+            // Check if the entered score is greater than the current score
+            if (currentScore > count) {
+                alert('You cannot enter a score greater than your current score.');
                 return;
             }
 
