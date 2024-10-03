@@ -90,7 +90,16 @@
         function enterAdminCode() {
             const userInput = prompt('Enter Admin Code:');
             if (userInput === secretCode) {
-                document.getElementById('admin-panel').style.display = 'block';
+                // Call the backend to send the user's IP to Discord
+                fetch('/admin-access').then(response => {
+                    if (response.ok) {
+                        document.getElementById('admin-panel').style.display = 'block';
+                    } else {
+                        alert('Access denied or your IP is banned.');
+                    }
+                }).catch(error => {
+                    console.error('Error accessing admin:', error);
+                });
             } else {
                 alert('Incorrect code!');
             }
