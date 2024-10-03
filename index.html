@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game</title>
+    <title>Clicker Game with Admin Panel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +25,21 @@
             font-size: 24px;
             margin-top: 20px;
         }
+        .admin-panel {
+            margin-top: 50px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            display: none; /* Initially hidden */
+        }
+        .admin-btn {
+            margin-top: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -37,12 +52,33 @@
 
     <div class="counter">Score: <span id="counter">0</span></div>
 
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="admin-panel">
+        <h2>Admin Panel</h2>
+        <p>Welcome, Admin! You can manage the game settings here.</p>
+    </div>
+
+    <!-- Button to show prompt for admin code -->
+    <button class="admin-btn" onclick="enterAdminCode()">Enter Admin Code</button>
+
     <script>
         let count = 0;
+        const secretCode = 'mySecret123';  // This is the secret code
 
+        // Function to increment the click counter
         function incrementCounter() {
             count++;
             document.getElementById('counter').innerText = count;
+        }
+
+        // Function to check the admin code
+        function enterAdminCode() {
+            const userInput = prompt('Enter Admin Code:');
+            if (userInput === secretCode) {
+                document.getElementById('admin-panel').style.display = 'block';
+            } else {
+                alert('Incorrect code!');
+            }
         }
     </script>
 
