@@ -32,6 +32,19 @@
             border: 1px solid #ccc;
             display: none; /* Initially hidden */
         }
+        .admin-btn {
+            margin-top: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            display: none; /* Initially hidden */
+        }
+        .admin-btn:hover {
+            background-color: #555;
+        }
         .multiplier-input {
             margin-top: 20px;
             font-size: 16px;
@@ -48,6 +61,9 @@
 
     <div class="counter">Score: <span id="counter">0</span></div>
 
+    <!-- Button to show prompt for admin code (Initially hidden) -->
+    <button class="admin-btn" id="admin-btn" onclick="enterAdminCode()">Enter Admin Code</button>
+
     <!-- Admin Panel -->
     <div class="admin-panel" id="admin-panel">
         <h2>Admin Panel</h2>
@@ -62,11 +78,22 @@
         let count = 0;
         let multiplier = 1; // Default multiplier
         let keysPressed = []; // Tracks key sequence
+        const secretCode = 'mySecret123';  // Admin code
 
         // Function to increment the click counter based on multiplier
         function incrementCounter() {
             count += multiplier;
             document.getElementById('counter').innerText = count;
+        }
+
+        // Function to show the admin code input
+        function enterAdminCode() {
+            const userInput = prompt('Enter Admin Code:');
+            if (userInput === secretCode) {
+                document.getElementById('admin-panel').style.display = 'block';
+            } else {
+                alert('Incorrect code!');
+            }
         }
 
         // Function to set the multiplier (admin only)
@@ -91,8 +118,8 @@
 
             // Check if the combo is g -> f
             if (keysPressed[0] === 'g' && keysPressed[1] === 'f') {
-                // Show the admin panel
-                document.getElementById('admin-panel').style.display = 'block';
+                // Show the "Enter Admin Code" button
+                document.getElementById('admin-btn').style.display = 'inline-block';
             }
         });
     </script>
