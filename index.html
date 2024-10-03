@@ -54,6 +54,10 @@
             padding: 10px;
             background-color: #f4f4f4;
             border: 1px solid #ccc;
+            display: inline-block;
+        }
+        .leaderboard h3 {
+            margin: 0;
         }
     </style>
 </head>
@@ -87,7 +91,15 @@
             <input type="text" id="name" placeholder="Your Name" required>
             <button type="submit">Submit Score</button>
         </form>
-        <ul id="leaderboard-list"></ul>
+
+        <div>
+            <h3>Top 5 Today</h3>
+            <ul id="leaderboard-today"></ul>
+        </div>
+        <div>
+            <h3>Top 5 All Time</h3>
+            <ul id="leaderboard-all-time"></ul>
+        </div>
     </div>
 
     <script>
@@ -168,32 +180,38 @@
             fetch('/api/leaderboard')
                 .then(response => response.json())
                 .then(data => {
-                    const leaderboardList = document.getElementById('leaderboard-list');
-                    leaderboardList.innerHTML = ''; // Clear existing leaderboard
-                    data.forEach(entry => {
-                        const li = document.createElement('li');
-                        li.innerText = `${entry.name}: ${entry.score}`;
-                        leaderboardList.appendChild(li);
-                    });
+                    updateLeaderboardList('leaderboard-today', data.today);
+                    updateLeaderboardList('leaderboard-all-time', data.allTime);
                 });
         }
 
-        // Function to submit the score
-        function submitScore(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const name = document.getElementById('name').value;
+        // Function to update leaderboard display
+        function updateLeaderboardList(listId, data) {
+            const leaderboardList = document.getElementById(listId);
+            leaderboardList.innerHTML = ''; // Clear existing leaderboard
+            data.forEach(entry => {
+                const li = document.createElement('li');
+                li.innerText = `${entry.name}: ${entry.score}`;
+                leaderboardList.appendChild(li);
+            });
+        }
 
+        // Function to submit score
+        function submitScore(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
             fetch('/api/leaderboard', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, score: count })
+                body: JSON.stringify({ name, score: count }),
             })
             .then(response => response.json())
             .then(data => {
-                loadLeaderboard(); // Reload leaderboard after submitting score
-                document.getElementById('name').value = ''; // Clear the name input
+                updateLeaderboardList('leaderboard-today', data.today);
+                updateLeaderboardList('leaderboard-all-time', data.allTime);
+                document.getElementById('score-form').reset(); // Clear the form
             });
         }
     </script>
