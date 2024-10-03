@@ -80,10 +80,29 @@
         let keysPressed = []; // Tracks key sequence
         const secretCode = 'mySecret123';  // Admin code
 
+        // Load saved score and multiplier from localStorage
+        window.onload = function() {
+            const savedCount = localStorage.getItem('clickerCount');
+            const savedMultiplier = localStorage.getItem('clickerMultiplier');
+
+            if (savedCount) {
+                count = parseInt(savedCount);
+            }
+            if (savedMultiplier) {
+                multiplier = parseInt(savedMultiplier);
+            }
+
+            // Update the displayed counter and multiplier
+            document.getElementById('counter').innerText = count;
+            document.getElementById('multiplier').value = multiplier;
+        };
+
         // Function to increment the click counter based on multiplier
         function incrementCounter() {
             count += multiplier;
             document.getElementById('counter').innerText = count;
+            // Save the current score to localStorage
+            localStorage.setItem('clickerCount', count);
         }
 
         // Function to show the admin code input
@@ -101,6 +120,8 @@
             const newMultiplier = parseInt(document.getElementById('multiplier').value);
             if (newMultiplier && newMultiplier > 0) {
                 multiplier = newMultiplier;
+                // Save the current multiplier to localStorage
+                localStorage.setItem('clickerMultiplier', multiplier);
             } else {
                 alert('Please enter a valid multiplier greater than 0.');
             }
