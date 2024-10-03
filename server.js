@@ -39,6 +39,7 @@ app.post('/api/leaderboard', (req, res) => {
     // Update all-time leaderboard
     updateLeaderboard(leaderboardAllTime, name, score);
     
+    // Send back the updated leaderboard
     res.json({
         today: leaderboardToday,
         allTime: leaderboardAllTime,
