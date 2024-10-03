@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game with Admin Panel and Multiplier</title>
+    <title>Clicker Game with Admin Panel, Multiplier, and Leaderboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,6 +49,12 @@
             margin-top: 20px;
             font-size: 16px;
         }
+        .leaderboard {
+            margin-top: 50px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +80,16 @@
         <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
     </div>
 
+    <!-- Leaderboard Section -->
+    <div class="leaderboard" id="leaderboard">
+        <h2>Leaderboard</h2>
+        <form id="score-form" onsubmit="submitScore(event)">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <button type="submit">Submit Score</button>
+        </form>
+        <ul id="leaderboard-list"></ul>
+    </div>
+
     <script>
         let count = 0;
         let multiplier = 1; // Default multiplier
@@ -95,6 +111,9 @@
             // Update the displayed counter and multiplier
             document.getElementById('counter').innerText = count;
             document.getElementById('multiplier').value = multiplier;
+
+            // Load leaderboard from the server
+            loadLeaderboard();
         };
 
         // Function to increment the click counter based on multiplier
@@ -143,6 +162,40 @@
                 document.getElementById('admin-btn').style.display = 'inline-block';
             }
         });
+
+        // Function to load the leaderboard
+        function loadLeaderboard() {
+            fetch('/api/leaderboard')
+                .then(response => response.json())
+                .then(data => {
+                    const leaderboardList = document.getElementById('leaderboard-list');
+                    leaderboardList.innerHTML = ''; // Clear existing leaderboard
+                    data.forEach(entry => {
+                        const li = document.createElement('li');
+                        li.innerText = `${entry.name}: ${entry.score}`;
+                        leaderboardList.appendChild(li);
+                    });
+                });
+        }
+
+        // Function to submit the score
+        function submitScore(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            const name = document.getElementById('name').value;
+
+            fetch('/api/leaderboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, score: count })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadLeaderboard(); // Reload leaderboard after submitting score
+                document.getElementById('name').value = ''; // Clear the name input
+            });
+        }
     </script>
 
 </body>
