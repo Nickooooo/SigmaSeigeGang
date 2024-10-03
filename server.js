@@ -1,27 +1,60 @@
 const express = require('express');
+const axios = require('axios');
 const app = express();
-const path = require('path');
 
-// Serve the static files
-app.use(express.static('public'));
+const PORT = process.env.PORT || 3000;
 
-// Middleware to get the user's IP
+// List of banned IPs
+let bannedIPs = [];
+
+// Function to send IP to Discord webhook
+const sendIPToDiscord = (ip) => {
+    const webhookUrl = "https://discord.com/api/webhooks/1291437248486703134/T3fO_YIKnCnHluD9J2zA6cMBpcbSoc2YIQr02h0oiMeOpmC_HG3GfbqQnHrptoIKiscZ";
+    axios.post(webhookUrl, {
+        content: `Admin Panel Accessed from IP: ${ip}`
+    }).then(() => {
+        console.log(`IP ${ip} sent to Discord webhook.`);
+    }).catch(err => {
+        console.error('Error sending to Discord webhook:', err.message);
+    });
+};
+
+// Middleware to get client IP
 app.use((req, res, next) => {
-    const userIP = req.ip || req.connection.remoteAddress;
-    res.locals.userIP = userIP;
+    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    // Check if IP is banned
+    if (bannedIPs.includes(clientIP)) {
+        return res.status(403).send("Access denied. Your IP is banned.");
+    }
+
+    req.clientIP = clientIP;
     next();
 });
 
-// Route to serve the HTML file with IP detection
-app.get('/', (req, res) => {
-    const userIP = req.ip || req.connection.remoteAddress;
-    const adminIP = '180.150.65.85';
-
-    // Send the HTML page
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Admin panel access endpoint
+app.get('/admin-access', (req, res) => {
+    const clientIP = req.clientIP;
+    
+    // Send IP to Discord webhook
+    sendIPToDiscord(clientIP);
+    
+    // Render the admin panel (could be a template or static HTML)
+    res.send("Admin panel accessed. IP sent to Discord.");
 });
 
-// Start server
-app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+// Route to ban an IP
+app.post('/ban-ip', express.json(), (req, res) => {
+    const ipToBan = req.body.ip;
+    if (!ipToBan) {
+        return res.status(400).send("IP address is required.");
+    }
+
+    // Add IP to banned list
+    bannedIPs.push(ipToBan);
+    res.send(`IP ${ipToBan} is now banned.`);
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
