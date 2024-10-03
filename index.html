@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POV:retard makes a site</title>
+    <title>Dumbass site</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,6 +68,7 @@
 
     <!-- Player name input -->
     <input type="text" id="name" placeholder="Enter your name">
+    <input type="number" id="newScore" placeholder="Enter your new score" min="0">
     <button onclick="submitScore()">Submit Score</button>
 
     <!-- Admin Panel -->
@@ -102,26 +103,27 @@
             document.getElementById('counter').innerText = count;
         }
 
-        // Function to submit score
+        // Function to submit or update score
         function submitScore() {
             const name = document.getElementById('name').value.trim();
+            const newScore = parseInt(document.getElementById('newScore').value);
             if (!name) {
                 alert('Please enter your name.');
                 return;
             }
 
-            // Check if player already exists
-            if (players[name] !== undefined) {
-                alert('You have already submitted your score!');
+            if (isNaN(newScore) || newScore < 0) {
+                alert('Please enter a valid score.');
                 return;
             }
 
-            // Save score
-            players[name] = count;
+            // Update or save score
+            players[name] = newScore;
             localStorage.setItem('players', JSON.stringify(players));
 
             updateLeaderboard();
-            document.getElementById('name').value = ''; // Clear the input
+            document.getElementById('name').value = ''; // Clear the name input
+            document.getElementById('newScore').value = ''; // Clear the score input
         }
 
         // Update the leaderboard
