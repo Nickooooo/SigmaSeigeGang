@@ -22,9 +22,12 @@ const sendIPToDiscord = (ip) => {
 // Middleware to get client IP
 app.use((req, res, next) => {
     const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    
+    console.log(`Incoming request from IP: ${clientIP}`); // Log the incoming IP
 
     // Check if IP is banned
     if (bannedIPs.includes(clientIP)) {
+        console.log(`Access denied for banned IP: ${clientIP}`); // Log the banned IP
         return res.status(403).send("Access denied. Your IP is banned.");
     }
 
@@ -39,7 +42,7 @@ app.get('/admin-access', (req, res) => {
     // Send IP to Discord webhook
     sendIPToDiscord(clientIP);
     
-    // Render the admin panel (could be a template or static HTML)
+    // Respond indicating access was granted
     res.send("Admin panel accessed. IP sent to Discord.");
 });
 
@@ -55,6 +58,7 @@ app.post('/ban-ip', express.json(), (req, res) => {
     res.send(`IP ${ipToBan} is now banned.`);
 });
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
