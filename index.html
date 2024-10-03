@@ -178,10 +178,18 @@
         // Function to load the leaderboard
         function loadLeaderboard() {
             fetch('/api/leaderboard')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     updateLeaderboardList('leaderboard-today', data.today);
                     updateLeaderboardList('leaderboard-all-time', data.allTime);
+                })
+                .catch(error => {
+                    console.error('Error fetching leaderboard:', error);
                 });
         }
 
@@ -191,7 +199,7 @@
             leaderboardList.innerHTML = ''; // Clear existing leaderboard
             data.forEach(entry => {
                 const li = document.createElement('li');
-                li.innerText = `${entry.name}: ${entry.score}`;
+                li.textContent = `${entry.name}: ${entry.score}`;
                 leaderboardList.appendChild(li);
             });
         }
@@ -200,6 +208,7 @@
         function submitScore(event) {
             event.preventDefault();
             const name = document.getElementById('name').value;
+
             fetch('/api/leaderboard', {
                 method: 'POST',
                 headers: {
@@ -207,11 +216,19 @@
                 },
                 body: JSON.stringify({ name, score: count }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 updateLeaderboardList('leaderboard-today', data.today);
                 updateLeaderboardList('leaderboard-all-time', data.allTime);
                 document.getElementById('score-form').reset(); // Clear the form
+            })
+            .catch(error => {
+                console.error('Error submitting score:', error);
             });
         }
     </script>
