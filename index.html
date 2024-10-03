@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dumbass site</title>
+    <title>Sped Site</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,8 +68,8 @@
 
     <!-- Player name input -->
     <input type="text" id="name" placeholder="Enter your name">
-    <input type="number" id="newScore" placeholder="Enter your new score" min="0">
-    <button onclick="submitScore()">Submit Score</button>
+    <input type="number" id="currentScore" placeholder="Enter your current score" min="0">
+    <button onclick="updateScore()">Update Score</button>
 
     <!-- Admin Panel -->
     <div class="admin-panel" id="admin-panel">
@@ -103,27 +103,27 @@
             document.getElementById('counter').innerText = count;
         }
 
-        // Function to submit or update score
-        function submitScore() {
+        // Function to update player's score
+        function updateScore() {
             const name = document.getElementById('name').value.trim();
-            const newScore = parseInt(document.getElementById('newScore').value);
+            const currentScore = parseInt(document.getElementById('currentScore').value);
             if (!name) {
                 alert('Please enter your name.');
                 return;
             }
 
-            if (isNaN(newScore) || newScore < 0) {
+            if (isNaN(currentScore) || currentScore < 0) {
                 alert('Please enter a valid score.');
                 return;
             }
 
-            // Update or save score
-            players[name] = newScore;
+            // Update score for the player
+            players[name] = currentScore;
             localStorage.setItem('players', JSON.stringify(players));
 
             updateLeaderboard();
             document.getElementById('name').value = ''; // Clear the name input
-            document.getElementById('newScore').value = ''; // Clear the score input
+            document.getElementById('currentScore').value = ''; // Clear the score input
         }
 
         // Update the leaderboard
