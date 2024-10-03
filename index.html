@@ -1,18 +1,50 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .click-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .click-button:hover {
+            background-color: #45a049;
+        }
+        .counter {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
 
-<h1>The Template Element</h1>
+    <h1>Clicker Game</h1>
 
-<p>Click the button below to display the hidden content from the template element.</p>
+    <p>Click the button below to increase your score!</p>
 
-<button> onclick="showContent()">Show hidden content</button>
+    <button class="click-button" onclick="incrementCounter()">Click me!</button>
 
-<template>
-    <h2>Flower</h2>
-    <img src="img_white_flower.jpg" width="214" height="204">
-</template>
+    <div class="counter">Score: <span id="counter">0</span></div>
 
+    <script>
+        let count = 0;
+
+        function incrementCounter() {
+            count++;
+            document.getElementById('counter').innerText = count;
+        }
+    </script>
 
 </body>
 </html>
