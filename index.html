@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game with Admin Panel and Leaderboard</title>
+    <title>Sigma Clicker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,7 +45,7 @@
         .admin-btn:hover {
             background-color: #555;
         }
-        .multiplier-input {
+        .multiplier-input, .remove-player-input {
             margin-top: 20px;
             font-size: 16px;
         }
@@ -58,7 +58,7 @@
 </head>
 <body>
 
-    <h1>Clicker Game</h1>
+    <h1>Sigma Clicker</h1>
     <p>Version: <span id="version">1.0</span></p>
     <p>Click the button below to increase your score!</p>
 
@@ -82,6 +82,11 @@
         <!-- Multiplier setting for Admin -->
         <label for="multiplier">Set Multiplier:</label>
         <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
+
+        <!-- Remove Player from Leaderboard -->
+        <h3>Remove Player from Leaderboard</h3>
+        <input type="text" id="removePlayerName" placeholder="Enter name to remove">
+        <button onclick="removePlayer()">Remove</button>
     </div>
 
     <h2>Leaderboard</h2>
@@ -182,6 +187,20 @@
             } else {
                 alert('Please enter a valid multiplier greater than 0.');
             }
+        }
+
+        // Function to remove a player from the leaderboard
+        function removePlayer() {
+            const nameToRemove = document.getElementById('removePlayerName').value.trim();
+            if (!nameToRemove || !players[nameToRemove]) {
+                alert('Player not found.');
+                return;
+            }
+            delete players[nameToRemove]; // Remove player
+            localStorage.setItem('players', JSON.stringify(players)); // Update local storage
+            updateLeaderboard(); // Refresh leaderboard
+            document.getElementById('removePlayerName').value = ''; // Clear the input
+            alert(`${nameToRemove} has been removed from the leaderboard.`);
         }
 
         // Function to handle key combo (g -> f)
