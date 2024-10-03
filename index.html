@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game with Admin Panel</title>
+    <title>Clicker Game with Admin Panel and Multiplier</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,6 +44,10 @@
         .admin-btn:hover {
             background-color: #555;
         }
+        .multiplier-input {
+            margin-top: 20px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -63,15 +67,20 @@
     <div class="admin-panel" id="admin-panel">
         <h2>Admin Panel</h2>
         <p>Welcome, Admin! You can manage the game settings here.</p>
+        
+        <!-- Multiplier setting for Admin -->
+        <label for="multiplier">Set Multiplier:</label>
+        <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
     </div>
 
     <script>
         let count = 0;
+        let multiplier = 1; // Default multiplier
         const secretCode = 'mySecret123';  // This is the secret code
 
-        // Function to increment the click counter
+        // Function to increment the click counter based on multiplier
         function incrementCounter() {
-            count++;
+            count += multiplier;
             document.getElementById('counter').innerText = count;
         }
 
@@ -82,6 +91,16 @@
                 document.getElementById('admin-panel').style.display = 'block';
             } else {
                 alert('Incorrect code!');
+            }
+        }
+
+        // Function to set the multiplier (admin only)
+        function setMultiplier() {
+            const newMultiplier = parseInt(document.getElementById('multiplier').value);
+            if (newMultiplier && newMultiplier > 0) {
+                multiplier = newMultiplier;
+            } else {
+                alert('Please enter a valid multiplier greater than 0.');
             }
         }
     </script>
