@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POV: Transactic11</title>
+    <title>POV:retard makes a site</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,6 +49,11 @@
             margin-top: 20px;
             font-size: 16px;
         }
+        .leaderboard {
+            margin-top: 50px;
+            list-style: none;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -61,8 +66,9 @@
 
     <div class="counter">Score: <span id="counter">0</span></div>
 
-    <!-- Button to show prompt for admin code (Initially hidden) -->
-    <button class="admin-btn" id="admin-btn" onclick="enterAdminCode()">Enter Admin Code</button>
+    <!-- Player name input -->
+    <input type="text" id="name" placeholder="Enter your name">
+    <button onclick="submitScore()">Submit Score</button>
 
     <!-- Admin Panel -->
     <div class="admin-panel" id="admin-panel">
@@ -74,6 +80,12 @@
         <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
     </div>
 
+    <h2>Leaderboard</h2>
+    <h3>Top 5 Today</h3>
+    <ul id="leaderboard-today" class="leaderboard"></ul>
+    <h3>Top 5 All Time</h3>
+    <ul id="leaderboard-all-time" class="leaderboard"></ul>
+
     <script>
         let count = 0;
         let multiplier = 1; // Default multiplier
@@ -81,10 +93,63 @@
         const secretCode = 'mySecret123';  // Admin code
         let version = 1.0; // Current version
 
+        // Store players' scores in local storage
+        const players = JSON.parse(localStorage.getItem('players')) || {};
+
         // Function to increment the click counter based on multiplier
         function incrementCounter() {
             count += multiplier;
             document.getElementById('counter').innerText = count;
+        }
+
+        // Function to submit score
+        function submitScore() {
+            const name = document.getElementById('name').value.trim();
+            if (!name) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            // Check if player already exists
+            if (players[name] !== undefined) {
+                alert('You have already submitted your score!');
+                return;
+            }
+
+            // Save score
+            players[name] = count;
+            localStorage.setItem('players', JSON.stringify(players));
+
+            updateLeaderboard();
+            document.getElementById('name').value = ''; // Clear the input
+        }
+
+        // Update the leaderboard
+        function updateLeaderboard() {
+            const todayScores = Object.entries(players)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const allTimeScores = Object.entries(players)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const todayList = document.getElementById('leaderboard-today');
+            const allTimeList = document.getElementById('leaderboard-all-time');
+            todayList.innerHTML = '';
+            allTimeList.innerHTML = '';
+
+            todayScores.forEach(entry => {
+                const li = document.createElement('li');
+                li.textContent = `${entry[0]}: ${entry[1]}`;
+                todayList.appendChild(li);
+            });
+
+            allTimeScores.forEach(entry => {
+                const li = document.createElement('li');
+                li.textContent = `${entry[0]}: ${entry[1]}`;
+                allTimeList.appendChild(li);
+            });
         }
 
         // Function to show the admin code input
@@ -126,6 +191,9 @@
 
         // Call updateVersion() when deploying a new version
         // updateVersion(); // Uncomment this when you deploy a new version
+
+        // Initialize leaderboard on load
+        updateLeaderboard();
     </script>
 
 </body>
