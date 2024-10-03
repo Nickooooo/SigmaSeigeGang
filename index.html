@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game with Admin Panel, Multiplier, and Leaderboard</title>
+    <title>POV: Transactic11</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,22 +49,12 @@
             margin-top: 20px;
             font-size: 16px;
         }
-        .leaderboard {
-            margin-top: 50px;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
-            display: inline-block;
-        }
-        .leaderboard h3 {
-            margin: 0;
-        }
     </style>
 </head>
 <body>
 
     <h1>Clicker Game</h1>
-
+    <p>Version: <span id="version">1.0</span></p>
     <p>Click the button below to increase your score!</p>
 
     <button class="click-button" onclick="incrementCounter()">Click me!</button>
@@ -84,56 +74,17 @@
         <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
     </div>
 
-    <!-- Leaderboard Section -->
-    <div class="leaderboard" id="leaderboard">
-        <h2>Leaderboard</h2>
-        <form id="score-form" onsubmit="submitScore(event)">
-            <input type="text" id="name" placeholder="Your Name" required>
-            <button type="submit">Submit Score</button>
-        </form>
-
-        <div>
-            <h3>Top 5 Today</h3>
-            <ul id="leaderboard-today"></ul>
-        </div>
-        <div>
-            <h3>Top 5 All Time</h3>
-            <ul id="leaderboard-all-time"></ul>
-        </div>
-    </div>
-
     <script>
         let count = 0;
         let multiplier = 1; // Default multiplier
         let keysPressed = []; // Tracks key sequence
         const secretCode = 'mySecret123';  // Admin code
-
-        // Load saved score and multiplier from localStorage
-        window.onload = function() {
-            const savedCount = localStorage.getItem('clickerCount');
-            const savedMultiplier = localStorage.getItem('clickerMultiplier');
-
-            if (savedCount) {
-                count = parseInt(savedCount);
-            }
-            if (savedMultiplier) {
-                multiplier = parseInt(savedMultiplier);
-            }
-
-            // Update the displayed counter and multiplier
-            document.getElementById('counter').innerText = count;
-            document.getElementById('multiplier').value = multiplier;
-
-            // Load leaderboard from the server
-            loadLeaderboard();
-        };
+        let version = 1.0; // Current version
 
         // Function to increment the click counter based on multiplier
         function incrementCounter() {
             count += multiplier;
             document.getElementById('counter').innerText = count;
-            // Save the current score to localStorage
-            localStorage.setItem('clickerCount', count);
         }
 
         // Function to show the admin code input
@@ -151,8 +102,6 @@
             const newMultiplier = parseInt(document.getElementById('multiplier').value);
             if (newMultiplier && newMultiplier > 0) {
                 multiplier = newMultiplier;
-                // Save the current multiplier to localStorage
-                localStorage.setItem('clickerMultiplier', multiplier);
             } else {
                 alert('Please enter a valid multiplier greater than 0.');
             }
@@ -160,77 +109,23 @@
 
         // Function to handle key combo (g -> f)
         document.addEventListener('keydown', function(event) {
-            // Push the pressed key into the keysPressed array
             keysPressed.push(event.key);
-
-            // Only keep the last 2 keys pressed
             if (keysPressed.length > 2) {
                 keysPressed.shift();
             }
-
-            // Check if the combo is g -> f
             if (keysPressed[0] === 'g' && keysPressed[1] === 'f') {
-                // Show the "Enter Admin Code" button
                 document.getElementById('admin-btn').style.display = 'inline-block';
             }
         });
 
-        // Function to load the leaderboard
-        function loadLeaderboard() {
-            fetch('/api/leaderboard')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateLeaderboardList('leaderboard-today', data.today);
-                    updateLeaderboardList('leaderboard-all-time', data.allTime);
-                })
-                .catch(error => {
-                    console.error('Error fetching leaderboard:', error);
-                });
+        // Function to update and display the version number
+        function updateVersion() {
+            version += 0.1; // Increment by 0.1 for minor updates
+            document.getElementById('version').innerText = version.toFixed(1); // Update displayed version
         }
 
-        // Function to update leaderboard display
-        function updateLeaderboardList(listId, data) {
-            const leaderboardList = document.getElementById(listId);
-            leaderboardList.innerHTML = ''; // Clear existing leaderboard
-            data.forEach(entry => {
-                const li = document.createElement('li');
-                li.textContent = `${entry.name}: ${entry.score}`;
-                leaderboardList.appendChild(li);
-            });
-        }
-
-        // Function to submit score
-        function submitScore(event) {
-            event.preventDefault();
-            const name = document.getElementById('name').value;
-
-            fetch('/api/leaderboard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, score: count }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                updateLeaderboardList('leaderboard-today', data.today);
-                updateLeaderboardList('leaderboard-all-time', data.allTime);
-                document.getElementById('score-form').reset(); // Clear the form
-            })
-            .catch(error => {
-                console.error('Error submitting score:', error);
-            });
-        }
+        // Call updateVersion() when deploying a new version
+        // updateVersion(); // Uncomment this when you deploy a new version
     </script>
 
 </body>
