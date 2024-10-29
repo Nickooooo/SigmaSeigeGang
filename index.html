@@ -9,6 +9,13 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
+            background-color: #ffffff; /* Default background */
+            color: #000000; /* Default text color */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+        .dark-mode {
+            background-color: #121212; /* Dark background */
+            color: #ffffff; /* Light text color */
         }
         .click-button {
             background-color: #4CAF50;
@@ -54,6 +61,12 @@
             list-style: none;
             padding: 0;
         }
+        .dark-mode-toggle {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +90,7 @@
     <!-- Admin Panel -->
     <div class="admin-panel" id="admin-panel">
         <h2>Admin Panel</h2>
-        <p>Welcome, Fatass! You can manage the game shit here.</p>
+        <p>Welcome, Sigma! You can manage the game Settings here.</p> 
         
         <!-- Multiplier setting for Admin -->
         <label for="multiplier">Set Multiplier:</label>
@@ -90,16 +103,15 @@
     </div>
 
     <h2>Leaderboard</h2>
-    <h3>Top 5 Today</h3>
-    <ul id="leaderboard-today" class="leaderboard"></ul>
-    <h3>Top 5 All Time</h3>
-    <ul id="leaderboard-all-time" class="leaderboard"></ul>
+    <h3>Top 5 Players</h3>
+    <ul id="leaderboard" class="leaderboard"></ul>
+
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
 
     <script>
         let count = 0;
         let multiplier = 1; // Default multiplier
-        let keysPressed = []; // Tracks key sequence
-        const secretCode = 'Niggerr Penis';  // Admin code
+        const secretCode = 'Sigma';  // Admin code 
         let version = 1.0; // Current version
 
         // Store players' scores in local storage
@@ -142,29 +154,17 @@
 
         // Update the leaderboard
         function updateLeaderboard() {
-            const todayScores = Object.entries(players)
+            const sortedScores = Object.entries(players)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 5);
 
-            const allTimeScores = Object.entries(players)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
+            const leaderboardList = document.getElementById('leaderboard');
+            leaderboardList.innerHTML = '';
 
-            const todayList = document.getElementById('leaderboard-today');
-            const allTimeList = document.getElementById('leaderboard-all-time');
-            todayList.innerHTML = '';
-            allTimeList.innerHTML = '';
-
-            todayScores.forEach(entry => {
+            sortedScores.forEach(entry => {
                 const li = document.createElement('li');
                 li.textContent = `${entry[0]}: ${entry[1]}`;
-                todayList.appendChild(li);
-            });
-
-            allTimeScores.forEach(entry => {
-                const li = document.createElement('li');
-                li.textContent = `${entry[0]}: ${entry[1]}`;
-                allTimeList.appendChild(li);
+                leaderboardList.appendChild(li);
             });
         }
 
@@ -203,25 +203,10 @@
             alert(`${nameToRemove} has been removed from the leaderboard.`);
         }
 
-        // Function to handle key combo (g -> f)
-        document.addEventListener('keydown', function(event) {
-            keysPressed.push(event.key);
-            if (keysPressed.length > 2) {
-                keysPressed.shift();
-            }
-            if (keysPressed[0] === 'g' && keysPressed[1] === 'f') {
-                document.getElementById('admin-btn').style.display = 'inline-block';
-            }
-        });
-
-        // Function to update and display the version number
-        function updateVersion() {
-            version += 0.1; // Increment by 0.1 for minor updates
-            document.getElementById('version').innerText = version.toFixed(1); // Update displayed version
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
         }
-
-        // Call updateVersion() when deploying a new version
-        // updateVersion(); // Uncomment this when you deploy a new version
 
         // Initialize leaderboard on load
         updateLeaderboard();
