@@ -73,18 +73,16 @@
 
     <h1>Sigma Clicker</h1>
     <p>Version: <span id="version">1.0</span></p>
-    <p>Click the button below to increase your score!</p>
+    <p>Click the thing!</p>
 
     <button class="click-button" onclick="incrementCounter()">Click me!</button>
 
     <div class="counter">Score: <span id="counter">0</span></div>
 
-    <!-- Player name input -->
     <input type="text" id="name" placeholder="Enter your name">
     <input type="number" id="currentScore" placeholder="Enter your current score" min="0">
     <button onclick="updateScore()">Update Score</button>
 
-    <!-- Button to show prompt for admin code -->
     <button class="admin-btn" id="admin-btn" onclick="enterAdminCode()">Enter Admin Code</button>
 
     <!-- Admin Panel -->
@@ -96,7 +94,6 @@
         <label for="multiplier">Set Multiplier:</label>
         <input class="multiplier-input" type="number" id="multiplier" value="1" min="1" onchange="setMultiplier()">
 
-        <!-- Remove Player from Leaderboard -->
         <h3>Remove Player from Leaderboard</h3>
         <input type="text" id="removePlayerName" placeholder="Enter name to remove">
         <button onclick="removePlayer()">Remove</button>
